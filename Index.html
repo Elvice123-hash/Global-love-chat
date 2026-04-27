@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Love Chat - 18+</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#e91e63">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #e91e63, #9c27b0);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+    .container {
+      background: rgba(255,255,255,0.95);
+      color: #333;
+      padding: 30px 20px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    h1 { color: #e91e63; margin-bottom: 10px; }
+    .heart { font-size: 60px; margin: 20px 0; }
+    button {
+      background: #e91e63;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 10px 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover { background: #c2185b; }
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 15px 0;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      text-align: center;
+    }
+    .hidden { display: none; }
+    .number-box {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 15px 0;
+      font-weight: bold;
+      font-size: 18px;
+      color: #e91e63;
+    }
+    .warning {
+      font-size: 12px;
+      color: #666;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AGE GATE -->
+  <div class="container" id="ageGate">
+    <div class="heart">❤️</div>
+    <h1>Global Love Chat</h1>
+    <h3>Age Verification Required</h3>
+    <p style="margin: 20px 0;">You must be 18 years or older to use this app.</p>
+    <button onclick="confirmAge(true)">I am 18+</button>
+    <button onclick="confirmAge(false)" style="background: #666;">I am under 18</button>
+    <p class="warning">By entering, you agree you are 18+. This app is for adults only.</p>
+  </div>
+
+  <!-- PAYWALL -->
+  <div class="container hidden" id="paywall">
+    <div class="heart">🔒</div>
+    <h1>Unlock Global Chat</h1>
+    <p style="margin: 15px 0;">Pay KSh 100 to meet new catches worldwide + Video & Audio calls</p>
+    <div class="number-box">
+      M-PESA: 254116624621<br>
+      Name: ELVICE
+    </div>
+    <p>Send KSh 100 then enter the unlock code sent to you</p>
+    <input type="text" id="codeInput" placeholder="Enter Unlock Code" maxlength="20">
+    <button onclick="checkCode()">Unlock Chat</button>
+    <p class="warning">Don't have a code? Pay first then contact 254116624621 on WhatsApp for your code.</p>
+  </div>
+
+<script>
+  // STEP 1: AGE GATE
+  function confirmAge(isAdult) {
+    if (!isAdult) {
+      alert("Sorry. You must be 18+ to use Global Love Chat.");
+      window.location.href = "https://google.com";
+      return;
+    }
+    // Save age verification for 1 day
+    localStorage.setItem('ageVerified', Date.now());
+    document.getElementById('ageGate').classList.add('hidden');
+    checkPayment();
+  }
+
+  // STEP 2: CHECK IF ALREADY PAID
+  function checkPayment() {
+    const unlocked = localStorage.getItem('chatUnlocked');
+    const unlockTime = localStorage.getItem('unlockTime');
+    const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+    
+    // If code was entered less than 30 days ago, skip paywall
+    if (unlocked === 'true' && unlockTime && Date.now() - unlockTime < thirtyDays) {
+      window.location.href = 'chat.html';
+      return;
+    }
+    
+    document.getElementById('paywall').classList.remove('hidden');
+  }
+
+  // STEP 3: CHECK UNLOCK CODE
+  function checkCode() {
+    const code = document.getElementById('codeInput').value.trim().toUpperCase();
+    
+    // CHANGE THIS CODE WHEN YOU GIVE IT TO PAYING USERS
+    const VALID_CODE = 'LOVE2026';
+    
+    if (code === VALID_CODE) {
+      localStorage.setItem('chatUnlocked', 'true');
+      localStorage.setItem('unlockTime', Date.now());
+      alert('Success! Welcome to Global Love Chat ❤️');
+      window.location.href = 'chat.html';
+    } else {
+      alert('Invalid code. Pay KSh 100 to 254116624621 then contact for code.');
+    }
+  }
+
+  // AUTO CHECK ON PAGE LOAD
+  window.onload = function() {
+    const ageVerified = localStorage.getItem('ageVerified');
+    const oneDay = 24 * 60 * 60 * 1000;
+    
+    if (ageVerified && Date.now() - ageVerified < oneDay) {
+      document.getElementById('ageGate').classList.add('hidden');
+      checkPayment();
+    }
+  }
+</script>
+
+</body>
+  </html>
