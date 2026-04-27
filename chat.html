@@ -1,1 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Love Chat - Meet People</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+    }
+    .header {
+      background: #e91e63;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header h1 { font-size: 20px; }
+    .online { font-size: 14px; opacity: 0.9; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      padding: 15px;
+    }
+    .person {
+      background: white;
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e91e63, #9c27b0);
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: white;
+    }
+    .name { font-weight: bold; margin: 5px 0; }
+    .country { font-size: 12px; color: #666; }
+    .online-dot {
+      width: 12px;
+      height: 12px;
+      background: #4caf50;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: 5px;
+    }
+    .call-buttons {
+      margin-top: 10px;
+      display: flex;
+      gap: 5px;
+    }
+    .call-btn {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      color: white;
+    }
+    .video { background: #2196f3; }
+    .audio { background: #4caf50; }
+    .chat { background: #e91e63; }
+    #logout {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
 
+<div class="header">
+  <h1>❤️ Global Love Chat</h1>
+  <div class="online"><span id="onlineCount">247</span> people online now <span class="online-dot"></span></div>
+</div>
+
+<div class="grid" id="peopleGrid">
+  <!-- People will load here -->
+</div>
+
+<button id="logout" onclick="logout()">Logout</button>
+
+<script>
+  // CHECK IF USER PAID - If not, kick back to paywall
+  const unlocked = localStorage.getItem('chatUnlocked');
+  const unlockTime = localStorage.getItem('unlockTime');
+  const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+  
+  if (unlocked !== 'true' || !unlockTime || Date.now() - unlockTime > thirtyDays) {
+    alert('Please pay KSh 100 to access chat');
+    window.location.href = 'index.html';
+  }
+
+  // FAKE PEOPLE DATA - For v1. Later we connect real Firebase users
+  const people = [
+    { name: 'Sofia', country: 'Brazil', emoji: '👩🏻' },
+    { name: 'James', country: 'USA', emoji: '👨🏿' },
+    { name: 'Aisha', country: 'Kenya', emoji: '👩🏾' },
+    { name: 'Marco', country: 'Italy', emoji: '👨🏻' },
+    { name: 'Priya', country: 'India', emoji: '👩🏽' },
+    { name: 'Ahmed', country: 'Egypt', emoji: '👨🏽' },
+    { name: 'Emma', country: 'UK', emoji: '👩🏼' },
+    { name: 'Chen', country: 'China', emoji: '👨' },
+  ];
+
+  // LOAD PEOPLE ICONS
+  const grid = document.getElementById('peopleGrid');
+  people.forEach(person => {
+    const div = document.createElement('div');
+    div.className = 'person';
+    div.innerHTML = `
+      <div class="avatar">${person.emoji}</div>
+      <div class="name">${person.name} <span class="online-dot"></span></div>
+      <div class="country">${person.country}</div>
+      <div class="call-buttons">
+        <button class="call-btn chat" onclick="startChat('${person.name}')">Chat</button>
+        <button class="call-btn audio" onclick="startCall('${person.name}', 'audio')">📞</button>
+        <button class="call-btn video" onclick="startCall('${person.name}', 'video')">📹</button>
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+
+  function startChat(name) {
+    alert('Chat with ' + name + ' - Full chat coming in v2. For now, use Video/Audio call.');
+  }
+
+  function startCall(name, type) {
+    alert(type.toUpperCase() + ' Call with ' + name + '\n\nVideo/Audio calls need ZegoCloud setup. Tell Elvice to add AppID to enable real calls.');
+  }
+
+  function logout() {
+    localStorage.removeItem('chatUnlocked');
+    localStorage.removeItem('unlockTime');
+    window.location.href = 'index.html';
+  }
+
+  // Fake online counter
+  setInterval(() => {
+    document.getElementById('onlineCount').innerText = Math.floor(200 + Math.random() * 100);
+  }, 5000);
+</script>
+
+</body>
+</html>
